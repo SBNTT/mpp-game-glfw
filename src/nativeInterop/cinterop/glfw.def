@@ -1,4 +1,4 @@
-package = me.sbntt.mpp.glfw
+package = me.sbntt.mppgame.glfw
 headers = GLFW/glfw3.h
 
 compilerOpts = -DGLFW_INCLUDE_VULKAN

@@ -9,13 +9,19 @@ repositories {
 
 plugins {
     kotlin("multiplatform")
+    id("maven-publish")
 }
 
-group   = "me.sbntt.mpp.glfw"
-version = "0.1.0"
+val group: String by project
+val version: String by project
+val bintrayOrg: String by project
+val bintrayRepo: String by project
 
-val glfwVersion   = "3.3.2"
-val vulkanVersion = "1.2.165"
+project.group = group
+project.version = version
+
+val glfwVersion: String by project
+val vulkanVersion: String by project
 
 val nativeLibsDir = buildDir.resolve("nativeLibs")
 val downloadsDir  = buildDir.resolve("tmp")
@@ -24,6 +30,30 @@ val vulkanDir    = nativeLibsDir.resolve("vulkan-$vulkanVersion")
 val glfwMacosDir = nativeLibsDir.resolve("glfw-$glfwVersion-macos")
 val glfwMingwDir = nativeLibsDir.resolve("glfw-$glfwVersion-mingw")
 val glfwLinuxDir = nativeLibsDir.resolve("glfw-$glfwVersion-linux")
+
+publishing {
+    repositories {
+        maven {
+            name = "Bintray"
+            url = uri("https://api.bintray.com/maven/$bintrayOrg/$bintrayRepo/${project.name}/;publish=1")
+            credentials {
+                username = System.getenv("BINTRAY_USER")
+                password = System.getenv("BINTRAY_API_KEY")
+            }
+        }
+    }
+
+    publications.withType<MavenPublication> {
+        pom {
+            name.set(project.name)
+            licenses {
+                license {
+                    name.set("Apache-2.0")
+                }
+            }
+        }
+    }
+}
 
 tasks {
     val setupVulkan by registering {
@@ -73,7 +103,7 @@ tasks {
     }
 
     val publishFromMacos by registering {
-        tasksFiltering("publish", "GitHubPackagesRepository", false, "ios", "macos").forEach {
+        tasksFiltering("publish", "BintrayRepository", false, "ios", "macos").forEach {
             dependsOn(this@tasks.getByName(it))
         }
     }
@@ -85,7 +115,7 @@ tasks {
     }
 
     val publishFromLinux by registering {
-        tasksFiltering("publish", "GitHubPackagesRepository", false, "android", "linux").forEach {
+        tasksFiltering("publish", "BintrayRepository", false, "android", "linux").forEach {
             dependsOn(this@tasks.getByName(it))
         }
     }
@@ -97,7 +127,7 @@ tasks {
     }
 
     val publishFromWindows by registering {
-        tasksFiltering("publish", "GitHubPackagesRepository", false, "mingw").forEach {
+        tasksFiltering("publish", "BintrayRepository", false, "mingw").forEach {
             dependsOn(this@tasks.getByName(it))
         }
     }

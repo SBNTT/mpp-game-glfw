@@ -1,4 +1,5 @@
-rootProject.name = "mpp-game-glfw"
+val name: String by settings
+rootProject.name = name
 
 pluginManagement {
     plugins {
