@@ -20,7 +20,7 @@ jobs:
 
       - name: Retrieve version of this library
         run: |
-          echo "LIB_VERSION=$(grep -F -m1 "glfwVersion=" gradle.properties | tr -d "glfwVersion=" | tr -d "\"")" >> $GITHUB_ENV
+          echo LIB_VERSION=$(grep -F -m1 "glfwVersion=" gradle.properties | tr -d "glfwVersion=" | tr -d "\"") >> $GITHUB_ENV
 
       - uses: mukunku/tag-exists-action@v1.0.0
         id: checkTag
