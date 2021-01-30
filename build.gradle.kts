@@ -12,16 +12,15 @@ plugins {
     id("maven-publish")
 }
 
+val glfwVersion: String by project
+val vulkanVersion: String by project
+
 val group: String by project
-val version: String by project
 val bintrayOrg: String by project
 val bintrayRepo: String by project
 
 project.group = group
-project.version = version
-
-val glfwVersion: String by project
-val vulkanVersion: String by project
+project.version = glfwVersion
 
 val nativeLibsDir = buildDir.resolve("nativeLibs")
 val downloadsDir  = buildDir.resolve("tmp")
