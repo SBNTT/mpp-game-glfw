@@ -41,17 +41,6 @@ publishing {
             }
         }
     }
-
-    publications.withType<MavenPublication> {
-        pom {
-            name.set(project.name)
-            licenses {
-                license {
-                    name.set("Apache-2.0")
-                }
-            }
-        }
-    }
 }
 
 tasks {
