@@ -1,6 +1,7 @@
 [ ![Download](https://api.bintray.com/packages/sbntt/mpp-game/glfw/images/download.svg) ](https://bintray.com/sbntt/mpp-game/glfw/_latestVersion)
 ![CD](https://github.com/SBNTT/mpp-game-glfw/workflows/CD/badge.svg)
 ![GLFW_RELEASES_WATCHER](https://github.com/SBNTT/mpp-game-glfw/workflows/GLFW_RELEASES_WATCHER/badge.svg)
+![VULKAN_RELEASES_WATCHER](https://github.com/SBNTT/mpp-game-glfw/workflows/VULKAN_RELEASES_WATCHER/badge.svg)
 
 # Kotlin mpp GLFW
 ## Usage
