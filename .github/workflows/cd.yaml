@@ -18,9 +18,17 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Retrieve version of this library
+      - name: Retrieve glfw version of this library
         run: |
-          echo LIB_VERSION=$(grep -F -m1 "glfwVersion=" gradle.properties | tr -d "glfwVersion=" | tr -d "\"") >> $GITHUB_ENV
+          echo GLFW_VERSION=$(grep -F -m1 "glfwVersion=" gradle.properties | tr -d "glfwVersion=" | tr -d "\"") >> $GITHUB_ENV
+
+      - name: Retrieve vulkan version of this library
+        run: |
+          echo VULKAN_VERSION=$(grep -F -m1 "vulkanVersion=" gradle.properties | tr -d "vulkanVersion=" | tr -d "\"") >> $GITHUB_ENV
+
+      - name: Set expected lib version from glfw and vulkan ones
+        run: |
+          echo LIB_VERSION=${{ env.GLFW_VERSION }}-vulkan.${{ env.VULKAN_VERSION }} >> $GITHUB_ENV
 
       - uses: mukunku/tag-exists-action@v1.0.0
         id: checkTag

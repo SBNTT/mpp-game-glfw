@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    implementation("me.sbntt.mppgame:glfw:$glfwVersion")
+    implementation("me.sbntt.mppgame:glfw:$glfwVersion-vulkan.$vulkanVersion")
 }
 ```
 

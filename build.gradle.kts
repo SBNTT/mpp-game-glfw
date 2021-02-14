@@ -20,7 +20,7 @@ val bintrayOrg: String by project
 val bintrayRepo: String by project
 
 project.group = group
-project.version = glfwVersion
+project.version = "$glfwVersion-vulkan.$vulkanVersion"
 
 val nativeLibsDir = buildDir.resolve("nativeLibs")
 val downloadsDir  = buildDir.resolve("tmp")
