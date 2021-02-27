@@ -132,7 +132,7 @@ kotlin {
                     KonanTarget.MACOS_X64 -> listOf(
                         tasks.named("setupMacosGlfw"),
                         glfwMacosDir.resolve("include"),
-                        "$glfwMacosDir/lib-macos/libglfw3.a"
+                        "$glfwMacosDir/lib-x86_64/libglfw3.a"
                     )
                     KonanTarget.MINGW_X64 -> listOf(
                         tasks.named("setupMingwGlfw"),
