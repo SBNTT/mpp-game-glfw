@@ -23,9 +23,9 @@ project.group = group
 project.version = "$glfwVersion-vulkan.$vulkanVersion"
 
 val nativeLibsDir = buildDir.resolve("nativeLibs")
-val downloadsDir  = buildDir.resolve("tmp")
+val downloadsDir = buildDir.resolve("tmp")
 
-val vulkanDir    = nativeLibsDir.resolve("vulkan-$vulkanVersion")
+val vulkanDir = nativeLibsDir.resolve("vulkan-$vulkanVersion")
 val glfwMacosDir = nativeLibsDir.resolve("glfw-$glfwVersion-macos")
 val glfwMingwDir = nativeLibsDir.resolve("glfw-$glfwVersion-mingw")
 val glfwLinuxDir = nativeLibsDir.resolve("glfw-$glfwVersion-linux")
@@ -128,42 +128,42 @@ kotlin {
 
     targets.withType<KotlinNativeTarget>().forEach {
         it.compilations.named("main") {
-            val (setupGlfwTask, glfwIncludeDir, staticLibraryPath) = when(konanTarget) {
-                    KonanTarget.MACOS_X64 -> listOf(
-                        tasks.named("setupMacosGlfw"),
-                        glfwMacosDir.resolve("include"),
-                        "$glfwMacosDir/lib-x86_64/libglfw3.a"
-                    )
-                    KonanTarget.MINGW_X64 -> listOf(
-                        tasks.named("setupMingwGlfw"),
-                        glfwMingwDir.resolve("include"),
-                        "$glfwMingwDir/lib-static-ucrt/glfw3dll.lib"
-                    )
-                    else -> listOf(
-                        tasks.named("setupLinuxGlfw"),
-                        glfwLinuxDir.resolve("include"),
-                        "$glfwLinuxDir/lib-linux/libglfw3.a"
-                    )
+            val (setupGlfwTask, glfwIncludeDir, staticLibraryPath) = when (konanTarget) {
+                KonanTarget.MACOS_X64 -> listOf(
+                    tasks.named("setupMacosGlfw"),
+                    glfwMacosDir.resolve("include"),
+                    "$glfwMacosDir/lib-x86_64/libglfw3.a"
+                )
+                KonanTarget.MINGW_X64 -> listOf(
+                    tasks.named("setupMingwGlfw"),
+                    glfwMingwDir.resolve("include"),
+                    "$glfwMingwDir/lib-static-ucrt/glfw3dll.lib"
+                )
+                else -> listOf(
+                    tasks.named("setupLinuxGlfw"),
+                    glfwLinuxDir.resolve("include"),
+                    "$glfwLinuxDir/lib-linux/libglfw3.a"
+                )
+            }
+
+            setupGlfwTask as TaskProvider<Task>
+            glfwIncludeDir as File
+            staticLibraryPath as String
+
+            cinterops.create("glfw") {
+                tasks.named(interopProcessingTaskName) {
+                    dependsOn(tasks.named("setupVulkan"))
+                    dependsOn(setupGlfwTask)
                 }
 
-                setupGlfwTask as TaskProvider<Task>
-                glfwIncludeDir as File
-                staticLibraryPath as String
+                includeDirs(glfwIncludeDir, vulkanDir.resolve("include"))
+            }
 
-                cinterops.create("glfw") {
-                    tasks.named(interopProcessingTaskName) {
-                        dependsOn(tasks.named("setupVulkan"))
-                        dependsOn(setupGlfwTask)
-                    }
-
-                    includeDirs(glfwIncludeDir, vulkanDir.resolve("include"))
-                }
-
-                kotlinOptions {
-                    freeCompilerArgs = listOf(
-                        "-include-binary", staticLibraryPath
-                    )
-                }
+            kotlinOptions {
+                freeCompilerArgs = listOf(
+                    "-include-binary", staticLibraryPath
+                )
+            }
         }
     }
 }
@@ -193,26 +193,26 @@ fun downloadNativeLibFromGithubAsset(url: String, asset: String, dest: File, run
     runAfter?.invoke()
 }
 
-fun download(url : String, dest: File) {
+fun download(url: String, dest: File) {
     ant.invokeMethod("get", mapOf("src" to url, "dest" to dest))
 }
 
 fun tasksFiltering(prefix: String, suffix: String, test: Boolean, vararg platforms: String) = tasks.names
-        .asSequence()
-        .filter { it.startsWith(prefix, ignoreCase = true) }
-        .filter { it.endsWith(suffix, ignoreCase = true) }
-        .filter { it.endsWith("test", ignoreCase = true) == test }
-        .filter { it.contains("test", ignoreCase = true) == test }
-        .filter { task -> platforms.any { task.contains(it, ignoreCase = true) } }
-        .toMutableList()
+    .asSequence()
+    .filter { it.startsWith(prefix, ignoreCase = true) }
+    .filter { it.endsWith(suffix, ignoreCase = true) }
+    .filter { it.endsWith("test", ignoreCase = true) == test }
+    .filter { it.contains("test", ignoreCase = true) == test }
+    .filter { task -> platforms.any { task.contains(it, ignoreCase = true) } }
+    .toMutableList()
 
 fun String.runCommand(workingDir: File = file("./")): String {
     val parts = this.split("\\s".toRegex())
     val proc = ProcessBuilder(*parts.toTypedArray())
-            .directory(workingDir)
-            .redirectOutput(ProcessBuilder.Redirect.PIPE)
-            .redirectError(ProcessBuilder.Redirect.PIPE)
-            .start()
+        .directory(workingDir)
+        .redirectOutput(ProcessBuilder.Redirect.PIPE)
+        .redirectError(ProcessBuilder.Redirect.PIPE)
+        .start()
 
     proc.waitFor(1, TimeUnit.MINUTES)
     return proc.inputStream.bufferedReader().readText().trim()
