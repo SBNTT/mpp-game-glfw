@@ -15,9 +15,12 @@ plugins {
 val glfwVersion: String by project
 val vulkanVersion: String by project
 
+val mavenRegistryName: String by project
+val mavenRegistryUrl: String by project
+val mavenRegistryUsernameEnvVariable: String by project
+val mavenRegistryPasswordEnvVariable: String by project
+
 val group: String by project
-val bintrayOrg: String by project
-val bintrayRepo: String by project
 
 project.group = group
 project.version = "$glfwVersion-vulkan.$vulkanVersion"
@@ -29,19 +32,6 @@ val vulkanDir = nativeLibsDir.resolve("vulkan-$vulkanVersion")
 val glfwMacosDir = nativeLibsDir.resolve("glfw-$glfwVersion-macos")
 val glfwMingwDir = nativeLibsDir.resolve("glfw-$glfwVersion-mingw")
 val glfwLinuxDir = nativeLibsDir.resolve("glfw-$glfwVersion-linux")
-
-publishing {
-    repositories {
-        maven {
-            name = "Bintray"
-            url = uri("https://api.bintray.com/maven/$bintrayOrg/$bintrayRepo/${project.name}/;publish=1;override=1")
-            credentials {
-                username = System.getenv("BINTRAY_USER")
-                password = System.getenv("BINTRAY_API_KEY")
-            }
-        }
-    }
-}
 
 tasks {
     val setupVulkan by registering {
@@ -99,9 +89,9 @@ tasks {
 
     val hostSpecificPublish by registering {
         dependsOn(when {
-            isMacOsHost() -> tasksFiltering("publish", "BintrayRepository", false, *macosHostTargets)
-            isLinuxHost() -> tasksFiltering("publish", "BintrayRepository", false, *linuxHostTargets)
-            isWindowsHost() -> tasksFiltering("publish", "BintrayRepository", false, *windowsHostTargets)
+            isMacOsHost() -> tasksFiltering("publish", "${mavenRegistryName}Repository", false, *macosHostTargets)
+            isLinuxHost() -> tasksFiltering("publish", "${mavenRegistryName}Repository", false, *linuxHostTargets)
+            isWindowsHost() -> tasksFiltering("publish", "${mavenRegistryName}Repository", false, *windowsHostTargets)
             else -> throw RuntimeException("Unsupported host")
         })
     }
@@ -149,6 +139,19 @@ kotlin {
                 freeCompilerArgs = listOf(
                     "-include-binary", staticLibraryPath
                 )
+            }
+        }
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = mavenRegistryName
+            url = uri(mavenRegistryUrl)
+            credentials {
+                username = System.getenv(mavenRegistryUsernameEnvVariable)
+                password = System.getenv(mavenRegistryPasswordEnvVariable)
             }
         }
     }
