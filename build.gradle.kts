@@ -113,7 +113,7 @@ kotlin {
                 KonanTarget.MINGW_X64 -> listOf(
                     tasks.named("setupMingwGlfw"),
                     glfwMingwDir.resolve("include"),
-                    "$glfwMingwDir/lib-static-ucrt/glfw3dll.lib"
+                    "$glfwMingwDir/lib-mingw-w64/libglfw3.a"
                 )
                 else -> listOf(
                     tasks.named("setupLinuxGlfw"),
