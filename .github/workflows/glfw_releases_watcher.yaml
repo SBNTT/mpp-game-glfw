@@ -8,7 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          token: ${{ secrets.GH_PAT }}
+          token: ${{ secrets.MACHINE_USER_TOKEN }}
 
       - name: Fetch latest glfw
         run: |
