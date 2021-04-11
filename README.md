@@ -20,7 +20,7 @@ dependencies {
 }
 ```
 
-This credentials uses a personaal access token with only the `read:packages` scope ;)
+This credentials uses a personal access token with only the `read:packages` scope ;)
 It can be freely used as downloading from GitHub packages requires authentication...
 
 ```kotlin
