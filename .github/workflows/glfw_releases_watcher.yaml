@@ -1,4 +1,4 @@
-name: GLFW_RELEASES_WATCHER
+name: glfw_releases_watcher
 on:
   schedule:
     - cron: 0 1 1 * *
