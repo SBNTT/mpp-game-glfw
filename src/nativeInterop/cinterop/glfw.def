@@ -1,5 +1,6 @@
 package = me.sbntt.mppgame.glfw
 headers = GLFW/glfw3.h
+headerFilter = GLFW/glfw3.h
 
 compilerOpts = -DGLFW_INCLUDE_VULKAN
 compilerOpts.linux = -I/usr/include -I/usr/local/include
